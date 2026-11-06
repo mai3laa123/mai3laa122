@@ -1,0 +1,66 @@
+class Student {
+  constructor(id, name, grades, attendance) {
+    this.id = id;
+    this.name = name;
+    this.grades = grades;
+    this.attendance = attendance;
+  }
+
+  calculateAverage() {
+    const sum = this.grades.reduce((acc, grade) => acc + grade, 0);
+    return sum / this.grades.length;
+  }
+
+  getGradeLetter(avg) {
+    if (avg >= 85) return 'A';
+    if (avg >= 75) return 'B';
+    if (avg >= 65) return 'C';
+    if (avg >= 50) return 'D';
+    if (avg >= 40) return 'E';
+    return 'F';
+  }
+
+  getFinalStatus() {
+    const avg = this.calculateAverage();
+    if (avg >= 50 && this.attendance >= 75) {
+      return "ناجح";
+    } else {
+      return "يحتاج مراجعة";
+    }
+  }
+}
+
+const studentsList = [
+  new Student(1, "أحمد محمد", [85, 90, 88], 85),
+  new Student(2, "منى أحمد", [42, 44, 45], 80),
+  new Student(3, "خالد علي", [70, 75, 80], 90),
+  new Student(4, "ريم حسن", [40, 42, 43], 70)
+];
+
+const strugglingStudents = studentsList.filter(student => {
+  const avg = student.calculateAverage();
+  return avg >= 40 && avg < 49.99;
+});
+
+const boostedAverages = strugglingStudents.map(student => {
+  return student.calculateAverage() + 5;
+});
+
+const sumBoosted = boostedAverages.reduce((acc, avg) => acc + avg, 0);
+
+let overallBoostedAverage = 0;
+if (boostedAverages.length > 0) {
+  overallBoostedAverage = sumBoosted / boostedAverages.length;
+}
+
+console.log("--- تقرير جميع الطلاب ---");
+studentsList.forEach(student => {
+  const avg = student.calculateAverage();
+  console.log(`الاسم: ${student.name} | المتوسط: ${avg.toFixed(2)} | التقدير: ${student.getGradeLetter(avg)} | النتيجة: ${student.getFinalStatus()}`);
+});
+
+console.log("\n--- مصفوفة الطلاب المتعثرين (الذين شملتهم الرأفة) ---");
+console.table(strugglingStudents);
+
+console.log("\n--- متوسط درجات الطلاب المتعثرين بعد التعديل (الرأفة) ---");
+console.log(overallBoostedAverage.toFixed(2));
